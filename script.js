@@ -15,8 +15,8 @@
   }
 */
 
-const OWNER = "SEU_USUARIO_GITHUB";
-const REPO = "SEU_REPOSITORIO";
+const OWNER = "eletropel";
+const REPO = "PAINEL-TV";
 const BRANCH = "main";
 const CONFIG_URL = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/config.json`;
 
