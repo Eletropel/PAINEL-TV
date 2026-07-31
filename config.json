@@ -1,24 +1,5 @@
 {
   "configReloadIntervalMinutes": 5,
-  "items": [
-    {
-      "type": "image",
-      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785511579655-30.png",
-      "duration": 5,
-      "category": "PROPAGANDA TV"
-    },
-    {
-      "type": "image",
-      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785511585321-31.png",
-      "duration": 5,
-      "category": "PROPAGANDA TV"
-    },
-    {
-      "type": "image",
-      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785522853655-teste.png",
-      "duration": 5,
-      "category": "PROPAGANDA TV"
-    }
-  ],
-  "updatedAt": "2026-07-31T18:39:54.282Z"
+  "items": [],
+  "updatedAt": "2026-07-31T20:14:29.915Z"
 }
