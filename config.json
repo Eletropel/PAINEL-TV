@@ -3,42 +3,6 @@
   "items": [
     {
       "type": "image",
-      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785511437146-1.png",
-      "duration": 15,
-      "category": "PROPAGANDA TV"
-    },
-    {
-      "type": "image",
-      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785511440502-2.png",
-      "duration": 15,
-      "category": "PROPAGANDA TV"
-    },
-    {
-      "type": "image",
-      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785511446061-3.png",
-      "duration": 15,
-      "category": "PROPAGANDA TV"
-    },
-    {
-      "type": "image",
-      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785511450190-4.png",
-      "duration": 15,
-      "category": "PROPAGANDA TV"
-    },
-    {
-      "type": "image",
-      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785511455861-5.png",
-      "duration": 15,
-      "category": "PROPAGANDA TV"
-    },
-    {
-      "type": "image",
-      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785511460161-6.png",
-      "duration": 15,
-      "category": "PROPAGANDA TV"
-    },
-    {
-      "type": "image",
       "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785511463782-7.png",
       "duration": 5,
       "category": "PROPAGANDA TV"
@@ -186,7 +150,13 @@
       "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785511585321-31.png",
       "duration": 5,
       "category": "PROPAGANDA TV"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785522853655-teste.png",
+      "duration": 5,
+      "category": "PROPAGANDA TV"
     }
   ],
-  "updatedAt": "2026-07-31T17:29:37.971Z"
+  "updatedAt": "2026-07-31T18:34:17.033Z"
 }
