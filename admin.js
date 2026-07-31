@@ -205,13 +205,80 @@ function renderItems() {
     btn.addEventListener('click', () => {
       const idx = parseInt(btn.dataset.idx, 10);
       const action = btn.dataset.action;
-      if (action === 'remove') items.splice(idx, 1);
-      else if (action === 'up' && idx > 0) [items[idx - 1], items[idx]] = [items[idx], items[idx - 1]];
-      else if (action === 'down' && idx < items.length - 1) [items[idx + 1], items[idx]] = [items[idx], items[idx + 1]];
-      renderItems();
+      if (action === 'remove') {
+        const removedItem = items[idx];
+        items.splice(idx, 1);
+        renderItems();
+        if (removedItem.type === 'image') deleteImageFromRepo(removedItem.src, btn);
+      }
+      else if (action === 'up' && idx > 0) { [items[idx - 1], items[idx]] = [items[idx], items[idx - 1]]; renderItems(); }
+      else if (action === 'down' && idx < items.length - 1) { [items[idx + 1], items[idx]] = [items[idx], items[idx + 1]]; renderItems(); }
     });
   });
 }
+
+// Converte a URL raw.githubusercontent.com salva no item de volta pro
+// caminho do arquivo dentro do repositório (ex: imagens/categoria/foto.png)
+function extractPathFromRawUrl(rawUrl) {
+  const prefix = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/`;
+  if (!rawUrl.startsWith(prefix)) return null;
+  return rawUrl.slice(prefix.length);
+}
+
+// Apaga o arquivo de imagem de verdade do repositório (não só da lista de rotação)
+async function deleteImageFromRepo(rawUrl) {
+  const path = extractPathFromRawUrl(rawUrl);
+  if (!path) return; // não bate com o padrão esperado, não mexe em nada por segurança
+
+  try {
+    const infoRes = await fetch(ghApi(`contents/${path}?ref=${branch}`), { headers: ghHeaders() });
+    if (!infoRes.ok) {
+      console.warn('Não achei o arquivo no repositório pra apagar (talvez já tenha sido removido).');
+      return;
+    }
+    const info = await infoRes.json();
+
+    const delRes = await fetch(ghApi(`contents/${path}`), {
+      method: 'DELETE',
+      headers: ghHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({
+        message: `Remove imagem: ${path}`,
+        sha: info.sha,
+        branch
+      })
+    });
+    if (!delRes.ok) throw new Error('HTTP ' + delRes.status);
+    showToast('Imagem removida do repositório também.', 'success');
+  } catch (err) {
+    console.error(err);
+    showToast('A imagem saiu da lista, mas não consegui apagar o arquivo do GitHub. Apague manualmente se quiser liberar espaço.', 'error');
+  }
+}
+
+/* --- Lembrar dados de conexão (localStorage é local só deste navegador/PC) --- */
+const STORAGE_KEY = 'tv-eletropel-admin-conn';
+
+function saveConnection(rememberToken) {
+  const data = { owner, repo, branch, token: rememberToken ? token : '' };
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) { /* ignora se bloqueado */ }
+}
+
+function loadSavedConnection() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    el('cfg-owner').value = data.owner || '';
+    el('cfg-repo').value = data.repo || '';
+    el('cfg-branch').value = data.branch || 'main';
+    if (data.token) {
+      el('cfg-token').value = data.token;
+      el('cfg-remember-token').checked = true;
+    }
+  } catch (e) { /* ignora dado corrompido */ }
+}
+
+loadSavedConnection();
 
 /* --- Conectar --- */
 el('btn-connect').addEventListener('click', () => {
@@ -220,12 +287,23 @@ el('btn-connect').addEventListener('click', () => {
   branch = el('cfg-branch').value.trim() || 'main';
   token = el('cfg-token').value.trim();
   if (!owner || !repo || !token) { showToast('Preencha usuário, repositório e token.', 'error'); return; }
+  saveConnection(el('cfg-remember-token').checked);
   el('setup-details').open = false;
   loadConfig();
 });
 
 el('btn-reload').addEventListener('click', loadConfig);
 el('btn-save').addEventListener('click', saveConfig);
+
+el('btn-forget').addEventListener('click', () => {
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignora */ }
+  el('cfg-owner').value = '';
+  el('cfg-repo').value = '';
+  el('cfg-branch').value = 'main';
+  el('cfg-token').value = '';
+  el('cfg-remember-token').checked = false;
+  showToast('Dados salvos apagados deste navegador.', 'success');
+});
 
 /* --- Tabs --- */
 el('tab-image').addEventListener('click', () => switchTab('image'));
@@ -297,7 +375,15 @@ async function uploadOne(file) {
         branch
       })
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    if (!res.ok) {
+      let detail = '';
+      try {
+        const errData = await res.json();
+        detail = errData.message || '';
+      } catch (e) { /* resposta sem JSON, ignora */ }
+      throw new Error(`HTTP ${res.status}${detail ? ' - ' + detail : ''}`);
+    }
 
     const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`;
     const duration = parseInt(el('new-duration').value, 10) || 15;
@@ -309,6 +395,6 @@ async function uploadOne(file) {
   } catch (err) {
     console.error(err);
     previewImg.remove();
-    showToast('Falha ao enviar a imagem. Confira o token e as permissões.', 'error');
+    showToast('Falha ao enviar: ' + err.message, 'error');
   }
 }
