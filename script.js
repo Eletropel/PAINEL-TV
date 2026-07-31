@@ -15,7 +15,7 @@
   }
 */
 
-const OWNER = "eletropel";
+const OWNER = "Eletropel";
 const REPO = "PAINEL-TV";
 const BRANCH = "main";
 const CONFIG_URL = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/config.json`;
