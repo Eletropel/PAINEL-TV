@@ -186,7 +186,73 @@
       "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/propaganda-tv/1785529070894-teste.png",
       "duration": 5,
       "category": "PROPAGANDA TV"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/oleos/1793025046842-p-gina-1-1.png",
+      "duration": 5,
+      "category": "OLEOS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/oleos/1793025049689-p-gina-2-2.png",
+      "duration": 5,
+      "category": "OLEOS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/oleos/1793025052572-p-gina-3-3.png",
+      "duration": 5,
+      "category": "OLEOS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/oleos/1793025054875-p-gina-4-4.png",
+      "duration": 5,
+      "category": "OLEOS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/oleos/1793025057583-p-gina-5-5.png",
+      "duration": 5,
+      "category": "OLEOS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/oleos/1793025060491-p-gina-6-6.png",
+      "duration": 5,
+      "category": "OLEOS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/oleos/1793025063858-p-gina-7-7.png",
+      "duration": 5,
+      "category": "OLEOS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/oleos/1793025066745-p-gina-8-8.png",
+      "duration": 5,
+      "category": "OLEOS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/oleos/1793025069325-p-gina-9-9.png",
+      "duration": 5,
+      "category": "OLEOS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/oleos/1793025072369-p-gina-10-10.png",
+      "duration": 5,
+      "category": "OLEOS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/oleos/1793025075243-teste.png",
+      "duration": 5,
+      "category": "OLEOS"
     }
   ],
-  "updatedAt": "2026-07-31T20:18:10.028Z"
+  "updatedAt": "2026-10-26T14:31:23.945Z"
 }
