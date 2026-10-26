@@ -208,11 +208,63 @@ function renderFolders() {
     const firstImage = catItems.find(i => i.type === 'image');
     const card = document.createElement('div');
     card.className = 'folder-card';
-    card.innerHTML = `
-      ${firstImage ? `<img class="folder-thumb" src="${firstImage.src}">` : `<div class="folder-thumb placeholder">📁</div>`}
-      <div class="folder-name">${cat}</div>
-      <div class="folder-count">${catItems.length} item${catItems.length === 1 ? '' : 's'}</div>
-    `;
+
+    if (firstImage) {
+      const thumb = document.createElement('img');
+      thumb.className = 'folder-thumb';
+      thumb.src = firstImage.src;
+      thumb.alt = `Prévia da categoria ${cat}`;
+      card.appendChild(thumb);
+    } else {
+      const thumb = document.createElement('div');
+      thumb.className = 'folder-thumb placeholder';
+      thumb.textContent = '📁';
+      card.appendChild(thumb);
+    }
+
+    const name = document.createElement('div');
+    name.className = 'folder-name';
+    name.textContent = cat;
+    card.appendChild(name);
+
+    const count = document.createElement('div');
+    count.className = 'folder-count';
+    count.textContent = `${catItems.length} item${catItems.length === 1 ? '' : 's'}`;
+    card.appendChild(count);
+
+    const actions = document.createElement('div');
+    actions.className = 'folder-actions';
+    const renameBtn = document.createElement('button');
+    renameBtn.className = 'btn secondary small';
+    renameBtn.type = 'button';
+    renameBtn.textContent = 'Renomear';
+    renameBtn.title = catItems.length ? 'Para renomear, remova ou mova primeiro os conteúdos desta categoria.' : 'Renomear categoria vazia';
+    renameBtn.disabled = catItems.length > 0;
+    renameBtn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (catItems.length) {
+        showToast('Por segurança, só é possível renomear categorias vazias. Remova ou mova os conteúdos primeiro.', 'error');
+        return;
+      }
+      renameCategory(cat);
+    });
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn danger small';
+    deleteBtn.type = 'button';
+    deleteBtn.textContent = 'Excluir';
+    deleteBtn.title = catItems.length ? 'Para excluir, remova primeiro os conteúdos desta categoria.' : 'Excluir categoria vazia';
+    deleteBtn.disabled = catItems.length > 0;
+    deleteBtn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (catItems.length) {
+        showToast('Essa categoria tem conteúdos. Remova-os primeiro para evitar perder referências.', 'error');
+        return;
+      }
+      deleteCategory(cat);
+    });
+    actions.append(renameBtn, deleteBtn);
+    card.appendChild(actions);
     card.onclick = () => openCategory(cat);
     grid.appendChild(card);
   });
@@ -231,6 +283,40 @@ function renderFolders() {
     openCategory(name);
   };
   grid.appendChild(newCard);
+}
+
+function renameCategory(oldName) {
+  const proposed = window.prompt(`Novo nome para a categoria "${oldName}":`, oldName);
+  if (proposed === null) return;
+  const newName = proposed.trim();
+  if (!newName) { showToast('O nome da categoria não pode ficar vazio.', 'error'); return; }
+  if (newName === oldName) return;
+  if (getCategories().some(cat => cat.toLocaleLowerCase('pt-BR') === newName.toLocaleLowerCase('pt-BR'))) {
+    showToast('Já existe uma categoria com esse nome.', 'error');
+    return;
+  }
+
+  categories = categories.map(cat => cat === oldName ? newName : cat);
+  activeCategories = activeCategories.map(cat => cat === oldName ? newName : cat);
+  showToast(`Categoria renomeada para "${newName}". Clique em Salvar para publicar.`, 'success');
+  renderFolders();
+  renderActiveCategories();
+}
+
+function deleteCategory(name) {
+  const hasItems = items.some(item => item.category === name);
+  if (hasItems) {
+    showToast('A categoria não está vazia. Remova seus conteúdos antes de excluí-la.', 'error');
+    return;
+  }
+  if (!window.confirm(`Excluir a categoria vazia "${name}"? Essa ação só será publicada nas TVs quando você clicar em Salvar.`)) return;
+
+  categories = categories.filter(cat => cat !== name);
+  activeCategories = activeCategories.filter(cat => cat !== name);
+  showToast(`Categoria "${name}" excluída. Clique em Salvar para publicar.`, 'success');
+  renderFolders();
+  renderActiveCategories();
+  el('dash-categories').textContent = getCategories().length;
 }
 
 function openCategory(cat) {

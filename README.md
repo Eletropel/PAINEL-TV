@@ -71,6 +71,14 @@ Em configurações antigas que ainda não tenham `activeCategories`, o player ex
 
 O navegador integrado pode ter limitações para iniciar automaticamente. Configure a página inicial para o endereço do player; dependendo do modelo, pode ser necessário abrir o navegador manualmente.
 
+### Criar, renomear e excluir categorias
+
+- Em **Alterar conteúdo**, crie uma categoria digitando o nome no cartão **Nova categoria**.
+- Categorias vazias podem ser renomeadas ou excluídas pelos botões no cartão da categoria.
+- Por segurança, os botões de renomear e excluir ficam desativados quando a categoria contém itens. Remova os itens primeiro para evitar referências quebradas ou perda acidental de imagens.
+- Essas alterações ficam pendentes no painel até clicar em **Salvar alterações nas TVs**.
+- Excluir uma categoria vazia remove sua entrada da configuração; não apaga imagens, pois não há itens cadastrados nela.
+
 ## Atualização e funcionamento
 
 - O player carrega a programação de `config.json`.
