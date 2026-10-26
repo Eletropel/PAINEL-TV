@@ -1,5 +1,13 @@
 {
   "configReloadIntervalMinutes": 5,
+  "categories": [
+    "ASDAD",
+    "OLEOS",
+    "PROPAGANDA TV"
+  ],
+  "activeCategories": [
+    "OLEOS"
+  ],
   "items": [
     {
       "type": "image",
@@ -254,5 +262,5 @@
       "category": "OLEOS"
     }
   ],
-  "updatedAt": "2026-10-26T14:40:18.067Z"
+  "updatedAt": "2026-10-26T18:01:29.336Z"
 }
