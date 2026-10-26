@@ -1,89 +1,96 @@
 # TV Eletropel — Painel de rotação de conteúdo
 
-Sistema de rotação de conteúdo (sites e imagens) para as TVs da loja, com painel de
-administração organizado por categorias (pastas). Tudo hospedado gratuitamente no GitHub.
+Sistema de exibição de sites e imagens nas TVs da loja, com painel administrativo, categorias personalizadas e seleção centralizada do conteúdo exibido. O projeto usa GitHub Pages para disponibilizar o player e `config.json` para sincronizar todas as TVs.
 
-## Arquivos
+## Arquivos do projeto
 
-- **index.html / style.css / script.js** → o "player" que roda na TV (fica público)
-- **admin.html / admin.css / admin.js** → o painel de controle (use só localmente, no seu PC)
+- **`index.html` / `style.css` / `script.js`** — player que deve ser aberto nas TVs.
+- **`admin.html` / `admin.css` / `admin.js`** — painel administrativo para editar conteúdos e publicar as configurações.
+- **`config.json`** — lista compartilhada de conteúdos, categorias, seleção de categorias ativas e data da última atualização.
+- **`imagens/`** — arquivos de imagem organizados por categoria.
 
-## Passo a passo
+## Como publicar e configurar
 
-### 1. Criar o repositório
-- Crie um repositório novo no GitHub (público — precisa ser público pra TV ler sem senha)
-- Suba todos os arquivos desta pasta pra ele
+### 1. Repositório
 
-### 2. Configurar o `script.js`
-Abra o arquivo `script.js` e troque:
-```js
-const OWNER = "SEU_USUARIO_GITHUB";
-const REPO = "SEU_REPOSITORIO";
-```
-pelos dados reais do seu usuário e repositório. Depois de editar, suba a alteração de novo pro GitHub.
+Mantenha os arquivos do projeto no repositório GitHub `Eletropel/PAINEL-TV`. O repositório precisa ser público para que as TVs consigam ler o player, o arquivo de configuração e as imagens sem autenticação.
 
-### 3. Ativar o GitHub Pages
-No repositório: **Settings → Pages → Branch: main → Save**
-Você vai receber um link tipo `https://seuusuario.github.io/seurepositorio/index.html` — esse é o link que vai na TV.
+### 2. Player
 
-### 4. Criar o token de acesso (pro painel de admin)
-Vá em **github.com → Settings → Developer settings → Fine-grained tokens → Generate new token**
-- Dê acesso apenas ao repositório desse projeto
-- Permissão: **Contents** → Read and write
-- **Nunca compartilhe esse token com ninguém, nem cole ele em conversas/e-mails.**
+No `script.js`, confira se `OWNER`, `REPO` e `BRANCH` correspondem ao repositório e à branch usados. Neste projeto, os valores são `Eletropel`, `PAINEL-TV` e `main`.
 
-### 5. Usar o painel
-Abra o `admin.html` **direto do seu computador** (dois cliques no arquivo, sem precisar de servidor).
-Cole usuário, repositório, branch (`main`) e o token. Daí é só criar categorias, subir imagens
-e adicionar sites — ao clicar em "Salvar", tudo é publicado direto no repositório.
+### 3. GitHub Pages
 
-**Importante:** não hospede o `admin.html` publicamente (nem no GitHub Pages). Use-o só localmente,
-já que ele pede o token de escrita.
+No repositório, acesse **Settings → Pages** e configure a publicação a partir da branch `main`. O endereço do player será:
 
-### 6. Configurar a TV (Philips / Android TV)
-- Instale o **Fully Kiosk Browser** (grátis, via Play Store)
-- Em **Start URL**, cole o link do GitHub Pages (passo 3)
-- Ative **Start on boot** e **Kiosk mode**
+`https://eletropel.github.io/PAINEL-TV/`
 
-### 7. Panasonic (My Home Screen)
-Esse sistema não permite instalar apps extras. Configure a página inicial do navegador
-embutido da TV pra apontar pro mesmo link — não abre 100% sozinho, mas fica só um clique
-no app "Internet" pra carregar direto.
+Use esse endereço como página inicial do navegador de cada TV.
 
-## Como funciona por trás
+### 4. Token de acesso para o painel
 
-- As imagens ficam salvas em `imagens/<categoria>/` dentro do repositório
-- Um arquivo `config.json` (criado automaticamente pelo painel) guarda a ordem, duração
-  e categoria de cada item
-- A TV verifica esse `config.json` a cada 5 minutos e atualiza sozinha
+O painel precisa de um token para gravar alterações no repositório. Crie um **Fine-grained personal access token** nas configurações do GitHub:
 
-## Dashboard e QR code
+- Selecione somente o repositório `PAINEL-TV`.
+- Conceda a permissão **Contents: Read and write**.
+- Defina uma validade adequada e não compartilhe o token.
 
-- Ao abrir o `admin.html`, a primeira tela é um **dashboard**: total de itens, total de
-  categorias, última atualização, e um **preview ao vivo** (a própria página da TV rodando
-  em miniatura dentro do painel — é o que está passando lá agora, de verdade)
-- A tela da TV mostra um **QR code discreto no canto inferior esquerdo** — é só um atalho
-  opcional pra abrir o admin rápido pelo celular quando você estiver perto da TV sem PC por
-  perto. No dia a dia, continue usando o admin pelo computador normalmente; o QR não muda nada
-  no seu fluxo.
+**Segurança:** o campo do token no painel é mascarado, e o código não deve guardar o token em `localStorage` nem incluí-lo em arquivos do repositório. O token permanece em memória enquanto o painel está aberto e é enviado ao GitHub para autenticar as operações. A máscara esconde os caracteres na tela, mas não transforma um token exposto em seguro. Não coloque o token em código, arquivos, capturas de tela ou commits. Se suspeitar que foi exposto, revogue-o no GitHub e gere outro.
 
-## Onde guardar os arquivos
+Como o repositório é público, qualquer segredo incluído em um arquivo publicado pode ser visto por qualquer pessoa. O painel pode estar hospedado publicamente, mas use-o com cuidado: só conecte com seu token em um dispositivo confiável e encerre a sessão/limpe o campo ao terminar.
 
-| Arquivo | Precisa estar no GitHub? | Precisa estar no PC? |
-|---|---|---|
-| `index.html` + `style.css` + `script.js` | ✅ Sim, obrigatório (é o que a TV lê) | Não precisa |
-| `admin.html` + `admin.css` + `admin.js` | Opcional | ✅ Sim, os 3 juntos na mesma pasta |
+### 5. Abrir e usar o painel
 
-Recomendação: suba a pasta inteira pro GitHub (não faz mal ter o admin lá também) **e** guarde
-uma cópia da pasta inteira em um lugar fixo no seu PC (ex: `Documentos/tv-eletropel/`) — é dali
-que você vai abrir e favoritar o admin no dia a dia. Os três arquivos do admin (`admin.html`,
-`admin.css`, `admin.js`) precisam ficar sempre juntos na mesma pasta, senão o painel abre sem
-estilo e sem funcionar.
+Abra `admin.html` no navegador. Para funcionar corretamente, mantenha `admin.html`, `admin.css` e `admin.js` juntos na mesma pasta. Informe o usuário/organização, o repositório, a branch (`main`) e o token; depois clique em **Conectar ao GitHub**.
 
-## Favoritar o admin no PC
+No painel você pode:
 
-1. Dê dois cliques no `admin.html` pra abrir no navegador
-2. Vai aparecer um endereço tipo `file:///C:/Users/SeuNome/Documentos/tv-eletropel/admin.html`
-3. Aperte a estrelinha da barra de endereço (ou `Ctrl + D`) e favorite normalmente
-4. **Não mova nem renomeie a pasta depois** — o link salvo aponta pro caminho exato do arquivo,
-   e quebra se o arquivo mudar de lugar
+- Criar suas próprias categorias, com os nomes que desejar.
+- Adicionar imagens e sites a essas categorias.
+- Organizar os conteúdos e definir a duração de cada item.
+- Selecionar uma ou várias categorias para determinar o que será exibido nas TVs.
+- Publicar as alterações em `config.json` pelo botão **Salvar alterações nas TVs**.
+
+### 6. Categorias ativas e sincronização das TVs
+
+A lista de categorias não é fixa: ela é formada pelas categorias criadas no painel e pelas categorias presentes nos conteúdos. Marque as categorias que deseja exibir e salve as alterações. Todas as TVs que usam este mesmo repositório recebem a mesma seleção e exibem os conteúdos pertencentes às categorias ativas.
+
+Desativar uma categoria **não apaga** os conteúdos nem as imagens; apenas os oculta temporariamente da programação exibida. Ao ativá-la novamente e salvar, seus conteúdos voltam a aparecer. A ordem dos conteúdos dentro da configuração é preservada.
+
+Em configurações antigas que ainda não tenham `activeCategories`, o player exibe todos os itens, mantendo a compatibilidade. O painel impede salvar uma seleção sem categorias ativas ou sem conteúdo correspondente.
+
+### 7. Configurar as TVs
+
+**Philips / Android TV**
+
+- Instale o Fully Kiosk Browser, se disponível para o modelo.
+- Configure a URL inicial para `https://eletropel.github.io/PAINEL-TV/`.
+- Ative as opções de inicialização automática e modo quiosque, conforme necessário.
+
+**Panasonic (My Home Screen)**
+
+O navegador integrado pode ter limitações para iniciar automaticamente. Configure a página inicial para o endereço do player; dependendo do modelo, pode ser necessário abrir o navegador manualmente.
+
+## Atualização e funcionamento
+
+- O player carrega a programação de `config.json`.
+- Por padrão, as TVs verificam a configuração novamente a cada **5 minutos**.
+- Quando uma nova seleção de categorias é salva, todas as TVs que usam essa configuração passam a seguir a mesma programação na próxima atualização.
+- As imagens ficam em `imagens/<categoria>/` e são referenciadas pela configuração.
+- O player mostra um QR code que aponta para o painel administrativo.
+
+## Arquivos que precisam ser enviados ao GitHub
+
+| Arquivo | Necessário para as TVs? | Finalidade |
+|---|---:|---|
+| `index.html` | Sim | Página do player |
+| `style.css` | Sim | Estilo do player |
+| `script.js` | Sim | Reprodução, leitura da configuração e filtro por categoria |
+| `config.json` | Sim | Programação compartilhada entre as TVs |
+| `imagens/` | Conforme os conteúdos usados | Imagens da programação |
+| `admin.html` | Para hospedar o painel; também pode ser usado localmente | Interface administrativa |
+| `admin.css` | Junto com o painel | Estilo administrativo |
+| `admin.js` | Junto com o painel | Conexão com GitHub e gerenciamento do conteúdo |
+| `README.md` | Recomendado | Documentação do projeto |
+
+Mantenha uma cópia de segurança do projeto no computador. Os três arquivos do painel (`admin.html`, `admin.css` e `admin.js`) devem permanecer juntos.
