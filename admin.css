@@ -110,3 +110,51 @@
   .toast.show { opacity: 1; transform: translateY(0); }
   .toast.success { border-color: var(--success); color: var(--success); }
   .toast.error { border-color: var(--danger); color: var(--danger); }
+
+
+/* Seletor global de categorias exibidas em todas as TVs */
+.category-control {
+  margin-top: 22px;
+  padding: 18px;
+  border: 1px solid var(--border, #343a46);
+  border-radius: 14px;
+  background: var(--panel, #171b23);
+}
+.active-category-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.active-category-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border, #343a46);
+  border-radius: 10px;
+  background: rgba(255,255,255,.025);
+  cursor: pointer;
+}
+.active-category-option input {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  accent-color: #f5c400;
+}
+.active-category-option span {
+  flex: 1;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+.active-category-option small {
+  color: var(--muted, #9aa3b2);
+  white-space: nowrap;
+}
+.category-control-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}

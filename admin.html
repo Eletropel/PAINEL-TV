@@ -21,20 +21,14 @@
       <div><label>Repositório</label><input id="cfg-repo" placeholder="ex: PAINEL-TV"></div>
       <div><label>Branch</label><input id="cfg-branch" placeholder="main" value="main"></div>
       <div><label>Token de Acesso (Personal Access Token)</label><input id="cfg-token" type="password" placeholder="ghp_..."></div>
-      <div class="full" style="display:flex; align-items:center; gap:8px; margin-top:-4px;">
-        <input type="checkbox" id="cfg-remember-token" style="width:auto;">
-        <label for="cfg-remember-token" style="margin:0; font-size:12px;">
-          Lembrar o token neste navegador (só marque em computador que só você usa)
-        </label>
-      </div>
       <div class="full"><button class="btn secondary small" id="btn-connect">Conectar</button>
         <button class="btn secondary small" id="btn-forget" style="margin-left:6px;">Esquecer dados salvos</button>
       </div>
       <div class="full setup-note">
         Crie o token em <strong>github.com → Settings → Developer settings → Fine-grained tokens</strong>,
         com permissão de leitura/escrita apenas em "Contents" desse repositório específico.
-        O token nunca é salvo — ele fica só na memória desta aba enquanto você usa o painel.
-        <strong>Não hospede este arquivo admin publicamente</strong>; use-o apenas localmente no seu computador.
+        O token é usado apenas durante esta sessão e não é salvo no navegador nem incluído nos arquivos do repositório.
+        O campo é mascarado. Use um token Fine-grained com acesso somente a Contents deste repositório e revogue-o se suspeitar de exposição.
       </div>
     </div>
   </details>
@@ -63,9 +57,18 @@
       <iframe id="live-preview-iframe" src="about:blank"></iframe>
     </div>
     <div class="setup-note" style="margin-top: 8px;">
-      Essa é a própria página da TV rodando ao vivo, em miniatura — o que você vê aqui é
-      exatamente o que está passando lá agora.
+      Essa é a própria página da TV rodando ao vivo, em miniatura. Todas as TVs usam a mesma programação.
     </div>
+
+    <section class="category-control">
+      <div class="section-title">Categorias exibidas nas TVs</div>
+      <p class="setup-note">Marque uma ou mais categorias. As categorias desativadas continuam salvas, mas seus conteúdos ficam ocultos em todas as TVs.</p>
+      <div id="active-category-list" class="active-category-list"></div>
+      <div class="category-control-actions">
+        <button class="btn secondary small" id="btn-select-all-categories">Selecionar todas</button>
+        <button class="btn secondary small" id="btn-clear-categories">Desmarcar todas</button>
+      </div>
+    </section>
 
     <button class="btn" id="btn-goto-folders" style="margin-top: 20px;">Alterar conteúdo →</button>
   </div>

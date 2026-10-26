@@ -1,5 +1,7 @@
 let owner = '', repo = '', branch = 'main', token = '';
 let items = [];
+let categories = [];
+let activeCategories = [];
 let configSha = null;
 let currentCategory = null;
 let lastUpdated = null;
@@ -35,6 +37,8 @@ async function loadConfig() {
     const res = await fetch(ghApi(`contents/config.json?ref=${branch}`), { headers: ghHeaders() });
     if (res.status === 404) {
       items = [];
+      categories = [];
+      activeCategories = [];
       configSha = null;
       setConnStatus('ok', 'conectado (novo config.json)');
     } else if (res.ok) {
@@ -42,6 +46,12 @@ async function loadConfig() {
       configSha = data.sha;
       const decoded = JSON.parse(b64ToUtf8(data.content));
       items = decoded.items || [];
+      categories = Array.isArray(decoded.categories) ? decoded.categories.slice() : [];
+      items.forEach(item => { if (item.category && !categories.includes(item.category)) categories.push(item.category); });
+      // Configuração antiga: todas as categorias ficam ativas por padrão.
+      activeCategories = Array.isArray(decoded.activeCategories)
+        ? decoded.activeCategories.filter(cat => categories.includes(cat))
+        : categories.slice();
       lastUpdated = decoded.updatedAt || null;
       setConnStatus('ok', 'conectado');
     } else {
@@ -62,7 +72,24 @@ async function saveConfig() {
   el('btn-save').textContent = 'Salvando...';
   try {
     const nowIso = new Date().toISOString();
-    const payload = { configReloadIntervalMinutes: 5, items, updatedAt: nowIso };
+    // Não publicar uma configuração que deixaria todas as TVs sem conteúdo.
+    const normalizedCategories = getCategories();
+    const normalizedActive = activeCategories.filter(cat => normalizedCategories.includes(cat));
+    if (normalizedActive.length === 0) {
+      showToast('Ative pelo menos uma categoria antes de salvar.', 'error');
+      return;
+    }
+    if (!items.some(item => normalizedActive.includes(item.category))) {
+      showToast('Ative uma categoria que tenha conteúdo cadastrado.', 'error');
+      return;
+    }
+    const payload = {
+      configReloadIntervalMinutes: 5,
+      categories: normalizedCategories,
+      activeCategories: normalizedActive,
+      items,
+      updatedAt: nowIso
+    };
     const body = {
       message: 'Atualiza config.json via painel',
       content: utf8ToB64(JSON.stringify(payload, null, 2)),
@@ -92,8 +119,41 @@ async function saveConfig() {
 
 /* --- Categorias / pastas --- */
 function getCategories() {
-  const cats = new Set(items.map(i => i.category).filter(Boolean));
-  return Array.from(cats).sort();
+  const cats = new Set([...(categories || []), ...items.map(i => i.category).filter(Boolean)]);
+  return Array.from(cats).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+}
+
+function renderActiveCategories() {
+  const list = el('active-category-list');
+  if (!list) return;
+  list.innerHTML = '';
+  const cats = getCategories();
+  if (!cats.length) {
+    list.innerHTML = '<p class="setup-note">Crie uma categoria em “Alterar conteúdo” para configurar a exibição.</p>';
+    return;
+  }
+  cats.forEach(cat => {
+    const label = document.createElement('label');
+    label.className = 'active-category-option';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = activeCategories.includes(cat);
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        if (!activeCategories.includes(cat)) activeCategories.push(cat);
+      } else {
+        activeCategories = activeCategories.filter(name => name !== cat);
+      }
+      renderActiveCategories();
+    });
+    const name = document.createElement('span');
+    name.textContent = cat;
+    const count = document.createElement('small');
+    const total = items.filter(item => item.category === cat).length;
+    count.textContent = `${total} item${total === 1 ? '' : 's'}`;
+    label.append(checkbox, name, count);
+    list.appendChild(label);
+  });
 }
 
 function formatUpdatedAt(iso) {
@@ -113,10 +173,20 @@ function renderDashboard() {
   el('dash-total').textContent = items.length;
   el('dash-categories').textContent = cats.length;
   el('dash-updated').textContent = formatUpdatedAt(lastUpdated);
+  renderActiveCategories();
 
   const viewerUrl = `https://${owner}.github.io/${repo}/index.html`;
   el('live-preview-iframe').src = viewerUrl;
 }
+
+el('btn-select-all-categories').addEventListener('click', () => {
+  activeCategories = getCategories();
+  renderActiveCategories();
+});
+el('btn-clear-categories').addEventListener('click', () => {
+  activeCategories = [];
+  renderActiveCategories();
+});
 
 el('btn-goto-folders').addEventListener('click', renderFolders);
 el('btn-back-dashboard').addEventListener('click', renderDashboard);
@@ -155,12 +225,16 @@ function renderFolders() {
   `;
   newCard.onclick = () => {
     const name = el('new-folder-name').value.trim();
-    if (name) openCategory(name);
+    if (!name) return;
+    if (!categories.includes(name)) categories.push(name);
+    if (!activeCategories.includes(name)) activeCategories.push(name);
+    openCategory(name);
   };
   grid.appendChild(newCard);
 }
 
 function openCategory(cat) {
+  if (!categories.includes(cat)) categories.push(cat);
   currentCategory = cat;
   el('view-dashboard').style.display = 'none';
   el('view-folders').style.display = 'none';
@@ -255,12 +329,20 @@ async function deleteImageFromRepo(rawUrl) {
   }
 }
 
-/* --- Lembrar dados de conexão (localStorage é local só deste navegador/PC) --- */
+/* --- Dados de conexão: guardar somente owner/repo/branch, nunca o token --- */
 const STORAGE_KEY = 'tv-eletropel-admin-conn';
 
-function saveConnection(rememberToken) {
-  const data = { owner, repo, branch, token: rememberToken ? token : '' };
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) { /* ignora se bloqueado */ }
+// Limpa imediatamente qualquer token que tenha sido salvo por versões antigas.
+try {
+  const old = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+  if (old && Object.prototype.hasOwnProperty.call(old, 'token')) {
+    delete old.token;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(old));
+  }
+} catch (e) { /* armazenamento indisponível ou corrompido */ }
+
+function saveConnection() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ owner, repo, branch })); } catch (e) {}
 }
 
 function loadSavedConnection() {
@@ -271,11 +353,7 @@ function loadSavedConnection() {
     el('cfg-owner').value = data.owner || '';
     el('cfg-repo').value = data.repo || '';
     el('cfg-branch').value = data.branch || 'main';
-    if (data.token) {
-      el('cfg-token').value = data.token;
-      el('cfg-remember-token').checked = true;
-    }
-  } catch (e) { /* ignora dado corrompido */ }
+  } catch (e) {}
 }
 
 loadSavedConnection();
@@ -287,7 +365,7 @@ el('btn-connect').addEventListener('click', () => {
   branch = el('cfg-branch').value.trim() || 'main';
   token = el('cfg-token').value.trim();
   if (!owner || !repo || !token) { showToast('Preencha usuário, repositório e token.', 'error'); return; }
-  saveConnection(el('cfg-remember-token').checked);
+  saveConnection();
   el('setup-details').open = false;
   loadConfig();
 });
@@ -301,7 +379,6 @@ el('btn-forget').addEventListener('click', () => {
   el('cfg-repo').value = '';
   el('cfg-branch').value = 'main';
   el('cfg-token').value = '';
-  el('cfg-remember-token').checked = false;
   showToast('Dados salvos apagados deste navegador.', 'success');
 });
 

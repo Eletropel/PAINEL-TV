@@ -45,7 +45,14 @@ async function loadConfig() {
     }
 
     configReloadIntervalMinutes = data.configReloadIntervalMinutes || 5;
-    items = data.items;
+    const allItems = data.items;
+    const activeCategories = Array.isArray(data.activeCategories) ? data.activeCategories : null;
+    // Compatibilidade com configurações antigas: sem filtro, exibe tudo.
+    // Se houver uma seleção válida, todas as TVs filtram a mesma lista.
+    const filteredItems = activeCategories && activeCategories.length
+      ? allItems.filter(item => activeCategories.includes(item.category))
+      : allItems;
+    items = filteredItems.length ? filteredItems : allItems;
     errorBox.style.display = 'none';
     statusEl.textContent = 'ok - ' + items.length + ' itens';
     buildElements();
