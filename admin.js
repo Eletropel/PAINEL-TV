@@ -415,20 +415,15 @@ async function deleteImageFromRepo(rawUrl) {
   }
 }
 
-/* --- Dados de conexão: guardar somente owner/repo/branch, nunca o token --- */
+/* --- Dados de conexão: salvar token neste navegador para facilitar o uso --- */
 const STORAGE_KEY = 'tv-eletropel-admin-conn';
 
-// Limpa imediatamente qualquer token que tenha sido salvo por versões antigas.
-try {
-  const old = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-  if (old && Object.prototype.hasOwnProperty.call(old, 'token')) {
-    delete old.token;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(old));
-  }
-} catch (e) { /* armazenamento indisponível ou corrompido */ }
-
 function saveConnection() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ owner, repo, branch })); } catch (e) {}
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ owner, repo, branch, token }));
+  } catch (e) {
+    showToast('Não foi possível salvar os dados neste navegador. Confira as permissões de armazenamento.', 'error');
+  }
 }
 
 function loadSavedConnection() {
@@ -439,7 +434,10 @@ function loadSavedConnection() {
     el('cfg-owner').value = data.owner || '';
     el('cfg-repo').value = data.repo || '';
     el('cfg-branch').value = data.branch || 'main';
-  } catch (e) {}
+    el('cfg-token').value = data.token || '';
+  } catch (e) {
+    // Ignora dados locais inválidos; o usuário pode preencher novamente.
+  }
 }
 
 loadSavedConnection();
@@ -461,11 +459,12 @@ el('btn-save').addEventListener('click', saveConfig);
 
 el('btn-forget').addEventListener('click', () => {
   try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignora */ }
+  token = '';
   el('cfg-owner').value = '';
   el('cfg-repo').value = '';
   el('cfg-branch').value = 'main';
   el('cfg-token').value = '';
-  showToast('Dados salvos apagados deste navegador.', 'success');
+  showToast('Token e dados de conexão apagados deste navegador.', 'success');
 });
 
 /* --- Tabs --- */

@@ -35,9 +35,9 @@ O painel precisa de um token para gravar alterações no repositório. Crie um *
 - Conceda a permissão **Contents: Read and write**.
 - Defina uma validade adequada e não compartilhe o token.
 
-**Segurança:** o campo do token no painel é mascarado, e o código não deve guardar o token em `localStorage` nem incluí-lo em arquivos do repositório. O token permanece em memória enquanto o painel está aberto e é enviado ao GitHub para autenticar as operações. A máscara esconde os caracteres na tela, mas não transforma um token exposto em seguro. Não coloque o token em código, arquivos, capturas de tela ou commits. Se suspeitar que foi exposto, revogue-o no GitHub e gere outro.
+**Como funciona o token:** o campo é mascarado e o token é salvo no armazenamento local (`localStorage`) deste navegador para você não precisar digitá-lo novamente. Ele não é escrito nos arquivos do repositório. O armazenamento local não é criptografado; alguém com acesso ao seu perfil de navegador ou a scripts maliciosos executados nessa origem pode conseguir acessá-lo. Use apenas em um computador confiável. O botão **Esquecer dados salvos** apaga o token e os dados de conexão deste navegador.
 
-Como o repositório é público, qualquer segredo incluído em um arquivo publicado pode ser visto por qualquer pessoa. O painel pode estar hospedado publicamente, mas use-o com cuidado: só conecte com seu token em um dispositivo confiável e encerre a sessão/limpe o campo ao terminar.
+Como o repositório é público, nunca coloque o token no código, no `config.json`, em capturas de tela ou em commits. Restrinja o token ao repositório `PAINEL-TV` e à permissão `Contents: Read and write`. Se suspeitar que foi exposto, revogue-o no GitHub e gere outro.
 
 ### 5. Abrir e usar o painel
 
