@@ -3,11 +3,13 @@
   "categories": [
     "ACESSÓRIOS VEICULOS",
     "OLEOS",
+    "PALHETAS",
     "PROPAGANDA TV"
   ],
   "activeCategories": [
     "OLEOS",
-    "ACESSÓRIOS VEICULOS"
+    "ACESSÓRIOS VEICULOS",
+    "PALHETAS"
   ],
   "items": [
     {
@@ -285,7 +287,55 @@
       "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/acess-rios-veiculos/1794256822945-geladeira-1.png",
       "duration": 5,
       "category": "ACESSÓRIOS VEICULOS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/palhetas/1795031804168-p-gina-1-1.png",
+      "duration": 5,
+      "category": "PALHETAS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/palhetas/1795031806347-p-gina-2-2.png",
+      "duration": 5,
+      "category": "PALHETAS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/palhetas/1795031808212-p-gina-3-3.png",
+      "duration": 5,
+      "category": "PALHETAS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/palhetas/1795031810030-p-gina-4-4.png",
+      "duration": 5,
+      "category": "PALHETAS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/palhetas/1795031812346-p-gina-5-5.png",
+      "duration": 5,
+      "category": "PALHETAS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/palhetas/1795031814828-p-gina-6-6.png",
+      "duration": 5,
+      "category": "PALHETAS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/palhetas/1795031816337-p-gina-7-7.png",
+      "duration": 5,
+      "category": "PALHETAS"
+    },
+    {
+      "type": "image",
+      "src": "https://raw.githubusercontent.com/Eletropel/PAINEL-TV/main/imagens/palhetas/1795031818369-p-gina-8-8.png",
+      "duration": 5,
+      "category": "PALHETAS"
     }
   ],
-  "updatedAt": "2026-11-09T20:40:58.497Z"
+  "updatedAt": "2026-11-18T19:57:10.342Z"
 }
